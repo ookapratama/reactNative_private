@@ -1,27 +1,21 @@
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 
-// function App () {
-
-//     return (
-//         <Text>Hello world</Text>
-//     )
-// }
-
-// Arrow function
+// Screens
+import Dashboard from './src/screens/Dashboard';
+import Edit from './src/screens/Edit';
 
 const App = () => {
-
-    
-
+  const Stack = createNativeStackNavigator();
   return (
-    <View style={{ flex: 1, backgroundColor: 'red' }}>
-      <Image
-        source={require('./src/assets/gambar.jpg')}
-        style={styles.img_icon}
-      />
-      <Text>Login</Text>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="Edit" component={Edit} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
