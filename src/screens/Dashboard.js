@@ -28,7 +28,6 @@ const Dashboard = () => {
   const [desa, setDesa] = useState('');
   const [kecamatan, setKecamatan] = useState('');
   const [refresh, setRefresh] = useState(false);
-  const navigation = useNavigation();
 
   const onRefresh = useCallback(() => {
     setRefresh(true);

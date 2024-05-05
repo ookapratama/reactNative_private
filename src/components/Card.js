@@ -1,10 +1,13 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 const Card = ({id, desa, kecamatan}) => {
+  const navigation = useNavigation();
+
   return (
     <View style={{marginBottom: 14}}>
-      <TouchableOpacity style={{borderWidth: 1, padding: 10, borderRadius: 6}}>
+      <TouchableOpacity onPress={() => navigation.navigate('Edit', {idData: id})} style={{borderWidth: 1, padding: 10, borderRadius: 6}}>
         <Text
           style={{
             fontSize: 24,
