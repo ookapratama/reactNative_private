@@ -1,61 +1,110 @@
 import {
   Button,
+  RefreshControl,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Card from '../components/Card';
-import 'react-native-url-polyfill/auto';
-import {createClient} from '@supabase/supabase-js';
-import {API_KEY, URL_API} from '../../env';
+// import 'react-native-url-polyfill/auto';
+// import {createClient} from '@supabase/supabase-js';
+// import {API_KEY, URL_API} from '../../env';
 
-const supabase = createClient(URL_API, API_KEY);
+// const supabase = createClient(URL_API, API_KEY);
 
+let dataDummy = [
+  {desa: 'antang', kecamatan: 'manggala'},
+  {desa: 'baruga', kecamatan: 'manggala'},
+  {desa: 'nipa nipa', kecamatan: 'manggala'},
+];
 const Dashboard = () => {
-  const [datas, setDatas] = useState([]);
+  const [datas, setDatas] = useState(dataDummy);
   const [desa, setDesa] = useState('');
   const [kecamatan, setKecamatan] = useState('');
+  const [refresh, setRefresh] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefresh(true);
+    setTimeout(() => {
+      getData();
+      setRefresh(false);
+    }, 2000);
+  }, []);
+
   const getData = async () => {
     try {
-      const {data, error} = await supabase.from('kepolisian').select('*');
-      console.log(data);
-      setDatas(data);
+      //   const {data} = await supabase.from('tes').select();
+      //   console.log('select data: ', data);
+      setDatas(dataDummy);
     } catch (error) {
       console.log(error);
       return;
     }
   };
 
+  const addData = () => {
+    const newData = {desa: desa, kecamatan: kecamatan};
+    setDatas(prevData => [...prevData, newData]);
+    setDesa('');
+    setKecamatan('');
+    console.log(newData);
+  };
+
+
+  useEffect(() => {
+    dataDummy = datas;
+  }, [datas]);
+
   useEffect(() => {
     getData();
-  }, []);
+    setRefresh(false);
+  }, [refresh]);
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} placeholder="Masukkan Nama Desa" />
-      <TextInput style={styles.input} placeholder="Masukkan Nama Kecamatan" />
-      <TouchableOpacity
-        style={{
-          padding: 10,
-          backgroundColor: 'skyblue',
-          marginVertical: 10,
-          marginBottom: 30,
-        }}>
-        <Text
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+        }>
+        <TextInput
+          style={styles.input}
+          onChangeText={value => setDesa(value)}
+          value={desa}
+          placeholder="Masukkan Nama Desa"
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={value => setKecamatan(value)}
+          value={kecamatan}
+          placeholder="Masukkan Nama Kecamatan"
+        />
+        <TouchableOpacity
+          onPress={() => addData()}
           style={{
-            textAlign: 'center',
-            color: 'black',
-            padding: 6,
-            fontSize: 18,
-            fontWeight: 'bold',
+            padding: 10,
+            backgroundColor: 'skyblue',
+            marginVertical: 10,
+            marginBottom: 30,
           }}>
-          Tambah Data
-        </Text>
-      </TouchableOpacity>
-      <Card desa={desa} kecamatan={kecamatan} />
+          <Text
+            style={{
+              textAlign: 'center',
+              color: 'black',
+              padding: 6,
+              fontSize: 18,
+              fontWeight: 'bold',
+            }}>
+            Tambah Data
+          </Text>
+        </TouchableOpacity>
+        {dataDummy.map(item => (
+          <Card id={item.id} desa={item.desa} kecamatan={item.kecamatan} />
+        ))}
+      </ScrollView>
     </View>
   );
 };

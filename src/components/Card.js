@@ -1,10 +1,10 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 
-const Card = ({desa, kecamatan}) => {
+const Card = ({id, desa, kecamatan}) => {
   return (
     <View style={{marginBottom: 14}}>
-      <TouchableOpacity style={{borderWidth: 1, padding: 10, borderRadius: 6}}>
+      <TouchableOpacity id={id} style={{borderWidth: 1, padding: 10, borderRadius: 6}}>
         <Text
           style={{
             fontSize: 24,
@@ -12,9 +12,9 @@ const Card = ({desa, kecamatan}) => {
             color: 'black',
             letterSpacing: 2,
           }}>
-          Card
+          {desa}
         </Text>
-        <Text style={{fontSize: 18}}>Card</Text>
+        <Text style={{fontSize: 18}}>{kecamatan}</Text>
       </TouchableOpacity>
     </View>
   );
