@@ -10,58 +10,61 @@ import {
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import Card from '../components/Card';
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 // import 'react-native-url-polyfill/auto';
 // import {createClient} from '@supabase/supabase-js';
 // import {API_KEY, URL_API} from '../../env';
 
 // const supabase = createClient(URL_API, API_KEY);
 
-let dataDummy = [
-  {desa: 'antang', kecamatan: 'manggala'},
-  {desa: 'baruga', kecamatan: 'manggala'},
-  {desa: 'nipa nipa', kecamatan: 'manggala'},
-];
+// let dataDummy = [
+//   {desa: 'antang', kecamatan: 'manggala'},
+//   {desa: 'baruga', kecamatan: 'manggala'},
+//   {desa: 'nipa nipa', kecamatan: 'manggala'},
+// ];
 const Dashboard = () => {
-  const [datas, setDatas] = useState(dataDummy);
+  const [datas, setDatas] = useState([]);
   const [desa, setDesa] = useState('');
   const [kecamatan, setKecamatan] = useState('');
   const [refresh, setRefresh] = useState(false);
+  const navigation = useNavigation();
 
   const onRefresh = useCallback(() => {
     setRefresh(true);
     setTimeout(() => {
-      getData();
       setRefresh(false);
     }, 2000);
   }, []);
 
   const getData = async () => {
     try {
-      //   const {data} = await supabase.from('tes').select();
-      //   console.log('select data: ', data);
-      setDatas(dataDummy);
+      const response = await axios.get(
+        `https://143c-125-162-213-242.ngrok-free.app/api/`,
+      );
+      setDatas(response.data);
     } catch (error) {
       console.log(error);
       return;
     }
   };
 
-  const addData = () => {
-    const newData = {desa: desa, kecamatan: kecamatan};
-    setDatas(prevData => [...prevData, newData]);
+  const addData = async () => {
+    const response = await axios.post(
+      `https://143c-125-162-213-242.ngrok-free.app/api/store`,
+      {
+        desa: desa,
+        kecamatan: kecamatan,
+      },
+    );
+
     setDesa('');
     setKecamatan('');
-    console.log(newData);
+    onRefresh();
   };
-
-
-  useEffect(() => {
-    dataDummy = datas;
-  }, [datas]);
 
   useEffect(() => {
     getData();
-    setRefresh(false);
   }, [refresh]);
 
   return (
@@ -101,8 +104,13 @@ const Dashboard = () => {
             Tambah Data
           </Text>
         </TouchableOpacity>
-        {dataDummy.map(item => (
-          <Card id={item.id} desa={item.desa} kecamatan={item.kecamatan} />
+        {datas.map(item => (
+          <Card
+            key={item.id}
+            id={item.id}
+            desa={item.desa}
+            kecamatan={item.kecamatan}
+          />
         ))}
       </ScrollView>
     </View>

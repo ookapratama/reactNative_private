@@ -4,7 +4,7 @@ import React from 'react';
 const Card = ({id, desa, kecamatan}) => {
   return (
     <View style={{marginBottom: 14}}>
-      <TouchableOpacity id={id} style={{borderWidth: 1, padding: 10, borderRadius: 6}}>
+      <TouchableOpacity style={{borderWidth: 1, padding: 10, borderRadius: 6}}>
         <Text
           style={{
             fontSize: 24,
